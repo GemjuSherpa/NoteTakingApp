@@ -4,11 +4,15 @@
   const showModal = ref(false)
 
   const newNotes = ref("")
-
+  const errorMessage = ref("")
 
   const notes = ref([])
 
   const addNote = ()=>{
+    if (newNotes.value.length <=10){
+      return errorMessage.value = "Note must be 10 characters long."
+    }
+
     notes.value.push({
       id: Math.floor(Math.random()*10000),
       text: newNotes.value,
@@ -18,6 +22,7 @@
 
     showModal.value = false
     newNotes.value = ""
+    errorMessage.value = ""
   }
 
   const getRandomColor = ()=>{
@@ -32,7 +37,8 @@
   <main>
     <div v-show="showModal" class="overlay">
       <div class="modal">
-        <textarea v-model="newNotes" name="note" id="note" cols="30" rows="10"></textarea>
+        <textarea v-model.trim="newNotes" name="note" id="note" cols="30" rows="10"></textarea>
+        <p v-if="errorMessage">{{errorMessage}}</p>
         <button @click="addNote">Add Notes</button>
         <button class="close" @click="showModal = !showModal">Close</button>
       </div>
@@ -43,8 +49,7 @@
         <button @click="showModal = !showModal">+</button>
       </header>
       <div class="cards-container">
-        
-        <div class="card" v-for="note in notes" :style="{backgroundColor: note.backgroundColor}">
+        <div class="card" v-for="note in notes" :key="note.id" :style="{backgroundColor: note.backgroundColor}">
             <p class="main-text">{{note.text}}</p>
             <p class="date">{{note.date}}</p>
         </div>
@@ -146,5 +151,9 @@
 
   .modal .close{
     background-color: rgb(231, 24, 69);
+  }
+
+  .modal p{
+    color: red;
   }
 </style>
