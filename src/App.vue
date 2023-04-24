@@ -1,30 +1,53 @@
 <script setup>
+  import {ref} from 'vue'
+
+  const showModal = ref(false)
+
+  const newNotes = ref("")
+
+
+  const notes = ref([])
+
+  const addNote = ()=>{
+    notes.value.push({
+      id: Math.floor(Math.random()*10000),
+      text: newNotes.value,
+      date: new Date(),
+      backgroundColor: getRandomColor()
+    })
+
+    showModal.value = false
+    newNotes.value = ""
+  }
+
+  const getRandomColor = ()=>{
+    return "hsl(" + Math.random()*360 + ", 100%, 75%"
+  }
+
+
 
 </script>
 
 <template>
   <main>
-    <!-- <div class="overlay">
+    <div v-show="showModal" class="overlay">
       <div class="modal">
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <button>Add Notes</button>
-        <button class="close">Close</button>
+        <textarea v-model="newNotes" name="note" id="note" cols="30" rows="10"></textarea>
+        <button @click="addNote">Add Notes</button>
+        <button class="close" @click="showModal = !showModal">Close</button>
       </div>
-    </div>  -->
+    </div> 
     <div class="container">
       <header>
         <h1>Notes</h1>
-        <button>+</button>
+        <button @click="showModal = !showModal">+</button>
       </header>
       <div class="cards-container">
-        <div class="card">
-          <p class="main-text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi id earum dignissimos, illum inventore, officia eum excepturi repellendus, ducimus neque iure! Quasi atque qui id libero esse unde distinctio omnis.</p>
-          <p class="date">15/02/2023</p>
+        
+        <div class="card" v-for="note in notes" :style="{backgroundColor: note.backgroundColor}">
+            <p class="main-text">{{note.text}}</p>
+            <p class="date">{{note.date}}</p>
         </div>
-        <div class="card">
-            <p class="main-text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nisi id earum dignissimos, illum inventore, officia eum excepturi repellendus, ducimus neque iure! Quasi atque qui id libero esse unde distinctio omnis.</p>
-            <p class="date">15/02/2023</p>
-          </div>
       </div>
     </div>
   </main>
